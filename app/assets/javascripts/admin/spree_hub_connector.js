@@ -7,6 +7,7 @@
 //= require underscore
 //= require backbone
 //= require backbone-validation-min
+//= require backbone.poller.min
 //= require admin/augury
 //= require_tree ./extensions
 //= require_tree ./events
