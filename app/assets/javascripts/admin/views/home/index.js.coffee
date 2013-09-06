@@ -22,18 +22,11 @@ Augury.Views.Home.Index = Backbone.View.extend(
     inactiveIntegrations = @collection.filter (integration) ->
       _(integration.mappings()).isEmpty()
 
-    # Change polling frequency to every 15 seconds if any custom integrations are present
-    if (_(activeIntegrations).filter (integration) -> integration.get('category') == 'custom').length > 0
-      unless Backbone.Poller.get(Augury.integrations).active()
-        @poller.changeDelay(15000)
-
     @active = new Augury.Collections.Integrations(activeIntegrations)
     @inactive = new Augury.Collections.Integrations(inactiveIntegrations)
 
-    @$el.html JST["admin/templates/home/index"](
-      env: @env
-      collection: @active
-    )
+    @$el.html JST["admin/templates/home/index"](env: @env, collection: @active)
+    @addAll()
 
     if $('#content-header .container .block-table').find('.page-actions').length < 1
       $('#content-header .container .block-table').append('<div class="table-cell"><ul class="page-actions"></ul></div>')
@@ -44,7 +37,6 @@ Augury.Views.Home.Index = Backbone.View.extend(
     @$el.find('#connection-actions').html JST["admin/templates/home/select_connection"](connections: Augury.connections)
 
     $('#content-header').find('.page-title').text('Overview')
-
 
     # Handle selections from add integration select2
     $("#integrations-select").on "select2-selected", (event, object) =>
@@ -66,6 +58,15 @@ Augury.Views.Home.Index = Backbone.View.extend(
     @setActiveIntegrations()
 
     this
+
+  addAll: ->
+    @active.each(@addOne, @)
+
+  addOne: (model) ->
+    view = new Augury.Views.Home.Integration(model: model)
+    view.render()
+    @$el.find('#integrations-list').append view.el
+    model.on 'remove', view.remove, view
 
   editIntegration: (e) ->
     e.preventDefault()
