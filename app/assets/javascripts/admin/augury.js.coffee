@@ -8,8 +8,6 @@ window.Augury =
 
   post_init: ->
     @handle_link_clicks()
-    @start_integration_poller()
-
     Backbone.history.start pushState: true, root: '/admin/integration/'
 
   connect: ->
@@ -73,15 +71,3 @@ window.Augury =
   update_nav: (active) ->
     $("ul.sidebar li").removeClass 'active'
     $("ul.sidebar li.#{active}").addClass 'active'
-
-  start_integration_poller: (delay = 600000) ->
-    poller = Backbone.Poller.get(Augury.integrations)
-    poller.stop() if poller.active()
-    poller.set(delay: delay, delayed: true)
-    poller.start()
-
-    poller.on 'success', ->
-      Augury.integrations.trigger 'reset'
-
-  stop_integration_poller: ->
-    Backbone.Poller.get(Augury.integrations).stop()
