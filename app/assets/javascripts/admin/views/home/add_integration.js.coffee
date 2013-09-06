@@ -2,16 +2,19 @@ Augury.Views.Home.AddIntegration = Backbone.View.extend(
   initialize: (attrs) ->
     @options = attrs
     @model = attrs.integration
-    @options.parametersByConsumer = @parametersByConsumer()
     @enabledMappings = []
     @keyValueTemplate = JST['admin/templates/parameters/key_value_fields']
     @listTemplate = JST['admin/templates/parameters/list_fields']
+
+    _.bindAll @, 'render'
+    @listenTo Augury.integrations, 'reset', @render
 
   events:
     'click button#cancel': 'cancel'
     'click button#save': 'save'
 
   render: ->
+    @options.parametersByConsumer = @parametersByConsumer()
     # Show modal
     @$el.html JST["admin/templates/home/edit_integration"](options: @options)
 
@@ -39,7 +42,12 @@ Augury.Views.Home.AddIntegration = Backbone.View.extend(
       width: 90
     })
 
-    @determineIfIntegrationIsReady()
+    # Show loading message while waiting for consumers to be present
+    unless @model.get('consumers') && @model.get('consumers').length > 0
+      @$el.html '<p>Please wait while we fetch the endpoint configuration...</p>'
+    else
+      @stopListening(Augury.integrations)
+
 
     @prepareClickHandlers()
     @validateListValues()
@@ -218,12 +226,4 @@ Augury.Views.Home.AddIntegration = Backbone.View.extend(
     event.preventDefault()
 
     $('.ui-dialog-content').dialog 'close'
-
-  determineIfIntegrationIsReady: ->
-    if @model.get('consumers').length > 0
-      console.log 'Consumers!'
-      @render
-    else
-      console.log 'No Consumers!'
-      @$el.html '<p>Please wait</p>'
 )
