@@ -354,6 +354,7 @@
 </fieldset>
 
 <div id="new-integration-modal"></div>
+<div id="endpoint-modal"></div>
 <%# / Active Integrations %>
 
 <%#---------------------------------------%>
