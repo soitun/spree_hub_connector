@@ -1,0 +1,150 @@
+<% children = @model.get('children') %>
+<% notifications = @model.get('notifications') %>
+<% queueName = @model.get('queue_name') %>
+<%#---------------------------------------%>
+<%# Messasge View                         %>
+<%#---------------------------------------%>
+<fieldset id="message-view" class='no-border-bottom'>
+
+  <legend class='queue-<%= queueName %>'>
+    <span class='icon-stack icon-1x'>
+      <i class="icon-circle icon-stack-base"></i>
+      <% if queueName == 'accepted': %>
+        <i class='icon-ok icon-light'></i>
+      <% else if queueName == 'archived': %>
+        <i class='icon-archive icon-light'></i>
+      <% else: %>
+        <i class='icon-arrow-down icon-light'></i>
+      <% end %>
+    </span>
+    <%= queueName %> Queue
+  </legend>
+
+  <%#---------------------------------------%>
+  <%# Message Details                       %>
+  <%#---------------------------------------%>
+  <div class="message-details alpha twelve columns">
+    <div class="message-service-image alpha two columns">
+      <% if @model.integrationIconUrl()?: %>
+        <img src="<%= @model.integrationIconUrl() %>" alt="<%= @model.get('destination_name') %>">
+      <% else: %>
+        <span class="icon-stack icon-4x integration-icon-fallback">
+          <i class="icon-circle icon-stack-base"></i>
+          <i class="icon-cloud icon-light"></i>
+          <i class="icon-exchange"></i>
+        </span>
+      <% end %>
+    </div>
+
+    <div class="message-details omega ten columns">
+
+      <div class="row message-top-details">
+        <div class="alpha seven columns">
+          <% unless @model.get('queue_name') == 'incoming': %>
+            <div class="service-name"><span>Remote:</span> <%= @model.get('consumer') %></div>
+          <% end %>
+          <div class="message-name"><span>Message:</span> <%= @model.get('message') %></div>
+          <% if @model.get('parent_id') != '': %>
+            <div class="parent-id"><span>Parent ID:</span> <a href='/admin/integration/messages/<%= @model.get('parent_id') %>'><%= @model.get('parent_id') %> <i class="icon-circle-arrow-right"></i></a></div>
+          <% end %>
+        </div>
+        <%#---------------------------------------%>
+        <%# Action Buttons                        %>
+        <%#---------------------------------------%>
+        <div class="omega three columns action-buttons">
+          <a href="/admin/integration/queues/<%= @model.get('queue_name') %>" class="button back">
+            <i class="icon-arrow-left"></i>      
+          </a>
+          <% unless @model.get('queue_name') == 'archived': %>      
+            <a href="javascript:void(0)" class='button refresh'>
+              <i class="icon-refresh"></i>
+            </a>      
+          <% end %>          
+        </div>
+        <%# / Action Buttons %>
+      </div>
+
+      <div class="message-minor-details">
+        <div class="message-created-at alpha four columns">
+          <div class="block-title">Created At:</div>
+          <div class="block-value"><%= Augury.format_date(@model.get('created_at')) %></div>
+        </div>
+        <div class="message-references three columns">
+          <% if @model.get('references')?: %>
+            <div class="block-title">References:</div>
+            <div class="block-value">
+              <a href="admin/orders/<%= @model.get('references') %>/edit">Order #<%= @model.get('references') %></a>
+            </div>
+          <% end %>
+        </div>
+        <% state = @model.state() %>
+        <div class="message-status three columns omega">
+          <div class="block-title">State:</div>
+          <div class="block-value"><span class="state <%= state.toLowerCase() %>">
+            <%= state %>
+          </span></div>
+          <% if @model.has_errors(): %>
+            <div class="block-title">Attempts: <%= @model.get('attempts') %></div>
+            <div class="block-title">Next Attempt:</div>
+            <div class="block-value"><%= Augury.format_date(@model.get('next_attempt')) %></span></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div id="detail-view">
+    </div>
+
+  </div>
+  <%# / Message Details %>
+
+  <div class="message-sidebar omega four columns">
+    <%#---------------------------------------%>
+    <%# Sidebar Navigation                    %>
+    <%#---------------------------------------%>
+    <nav>
+      <ul>
+        <li>
+          <a href="javascript:void(0)">Overview</a>
+
+          <ul>
+            <li>
+              <a href="javascript:void(0)" data-template="children">Children (<%= children.length %>)</a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" data-template="notifications">Notifications (<%= notifications.length %>)</a>
+            </li>
+            <% if @model.has_errors(): %>
+              <li>
+                <a href="javascript:void(0)" data-template="last_error">Last Error</a>
+              </li>
+            <% end %>
+          </ul>
+        </li>
+
+        <li>
+          <a href="javascript:void(0)">Inspect</a>
+
+          <ul>
+            <% if @model.get('result')?: %>
+              <li>
+                <a href="javascript:void(0)" data-template="result">Result</a>
+              </li>
+            <% end %>
+            <li>
+              <a href="javascript:void(0)" data-template="attributes">Attributes</a>
+            </li>
+            <li>
+              <a href="javascript:void(0)" data-template="payload">Payload</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+    <%# / Sidebar Navigation %>
+
+  </div>
+  <%# / Message Sidebar %>
+
+</fieldset>
+<%# / Message View %>
