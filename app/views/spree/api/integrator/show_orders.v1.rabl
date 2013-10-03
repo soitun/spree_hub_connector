@@ -39,7 +39,7 @@ child(:orders => :orders) do
   end
 
   node(:count) { @orders.count }
-  node(:current_page) { params[:orders_page] || 1 }
+  node(:current_page) { params[:page] || 1 }
   node(:pages) { @orders.num_pages }
 end
 

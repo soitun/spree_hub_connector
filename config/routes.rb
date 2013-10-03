@@ -18,7 +18,7 @@ Spree::Core::Engine.routes.draw do
 
       get 'orders',                 to: 'integrator#show_orders'
       # get 'users',                  to: 'integrator#show_users'
-      # get 'products',               to: 'integrator#show_products'
+      get 'products',               to: 'integrator#show_products'
       # get 'return_authorizations',  to: 'integrator#show_return_authorizations'
       get 'stock_transfers',        to: 'integrator#show_stock_transfers'
     end

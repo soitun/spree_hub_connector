@@ -1,3 +1,3 @@
 collection @collections => :collections
-attributes :name, :token, :frequency
+attributes *collection_attributes
 

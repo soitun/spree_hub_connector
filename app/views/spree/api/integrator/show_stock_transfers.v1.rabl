@@ -24,6 +24,6 @@ child(:stock_transfers => :stock_transfers) do
   end
 
   node(:count) { @stock_transfers.count }
-  node(:current_page) { params[:stock_transfers_page] || 1 }
+  node(:current_page) { params[:page] || 1 }
   node(:pages) { @stock_transfers.num_pages }
 end

@@ -20,8 +20,8 @@ module Spree
       Order.update_all(:updated_at => 2.days.ago)
 
       api_get :show_orders, since: 3.days.ago.utc.to_s,
-                      order_page: 1,
-                      order_per_page: 1
+                      page: 1,
+                      per_page: 1
 
       json_response['orders']['count'].should eq 1
       json_response['orders']['current_page'].should eq 1
@@ -56,12 +56,25 @@ module Spree
       end
 
       api_get :show_stock_transfers, since: 3.days.ago.utc.to_s,
-                      stock_transfers_page: 1,
-                      stock_transfers_per_page: 1
+        page: 1,
+        per_page: 1
 
       transfer = json_response['stock_transfers']['page'].first
       transfer['destination_location']['name'].should eq 'DEST101'
       transfer['destination_movements'].first['quantity'].should eq 1
+    end
+
+    it 'gets products changed since' do
+      product = create(:product)
+      Product.update_all(:updated_at => 2.days.ago)
+
+      api_get :show_products, since: 3.days.ago.utc.to_s,
+                      page: 1,
+                      per_page: 1
+
+      json_response['products']['count'].should eq 1
+      json_response['products']['current_page'].should eq 1
+      json_response['products']['page'].first['id'].should eq product.id
     end
   end
 end
