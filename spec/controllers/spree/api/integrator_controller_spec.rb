@@ -8,11 +8,18 @@ module Spree
       stub_authentication!
     end
 
+
+    it 'gets all available collections' do
+      api_get :index
+
+      expect(json_response['collections']).to have(5).items
+    end
+
     it 'gets orders changed since' do
       order = create(:completed_order_with_totals)
       Order.update_all(:updated_at => 2.days.ago)
 
-      api_get :index, since: 3.days.ago.utc.to_s,
+      api_get :show_orders, since: 3.days.ago.utc.to_s,
                       order_page: 1,
                       order_per_page: 1
 
@@ -48,7 +55,7 @@ module Spree
         movement.originator = stock_transfer
       end
 
-      api_get :index, since: 3.days.ago.utc.to_s,
+      api_get :show_stock_transfers, since: 3.days.ago.utc.to_s,
                       stock_transfers_page: 1,
                       stock_transfers_per_page: 1
 

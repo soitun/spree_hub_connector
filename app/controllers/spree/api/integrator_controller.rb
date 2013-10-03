@@ -8,8 +8,22 @@ module Spree
       respond_to :json
 
       def index
-        @since = params[:since] || 1.day.ago
+        @collections = [
+          OpenStruct.new({ name: 'orders',                 token: 'number',  frequency: '5.minutes' }),
+          OpenStruct.new({ name: 'users',                  token: 'number',  frequency: '5.minutes' }),
+          OpenStruct.new({ name: 'products',               token: 'number',  frequency: '1.hour' }),
+          OpenStruct.new({ name: 'return_authorizations',  token: 'id',      frequency: '1.hour' }),
+          OpenStruct.new({ name: 'stock_transfers',        token: 'id',      frequency: '1.hour' })
+        ]
+      end
+
+      def show_orders
+        @since  = params[:since] || 1.day.ago
         @orders = orders @since
+      end
+
+      def show_stock_transfers
+        @since           = params[:since] || 1.day.ago
         @stock_transfers = stock_transfers(@since)
       end
 
