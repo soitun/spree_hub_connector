@@ -6,6 +6,6 @@ child(:products => :products) do
   end
 
   node(:count) { @products.count }
-  node(:current_page) { params[:page] || 1 }
+  node(:current_page) { @page }
   node(:pages) { @products.num_pages }
 end

@@ -6,6 +6,13 @@ module Spree
 
       respond_to :json
 
+      before_filter :set_default_filter,
+        only: [:show_orders,
+               :show_users,
+               :show_products,
+               :show_return_authorizations,
+               :show_stock_transfers]
+
       def index
         @collections = [
           OpenStruct.new({ name: 'orders',                 token: 'number',  frequency: '5.minutes' }),
@@ -17,43 +24,37 @@ module Spree
       end
 
       def show_orders
-        @since  = params[:since] || 1.day.ago
-        @orders = orders(@since)
+        @orders = filter_resource(Spree::Order.complete)
       end
 
-      def show_stock_transfers
-        @since           = params[:since] || 1.day.ago
-        @stock_transfers = stock_transfers(@since)
+      def show_users
+        @users = filter_resource(Spree.user_class)
       end
 
       def show_products
-        @since    = params[:since] || 1.day.ago
-        @products = products(@since)
+        @products = filter_resource(Spree::Product)
+      end
+
+      def show_return_authorizations
+        @return_authorizations = filter_resource(Spree::ReturnAuthorization)
+      end
+
+      def show_stock_transfers
+        @stock_transfers = filter_resource(Spree::StockTransfer)
       end
 
       private
-      def orders(since)
-        Spree::Order.complete
-                    .ransack(:updated_at_gteq => since).result
-                    .page(params[:page])
-                    .per(params[:per_page])
-                    .order('updated_at ASC')
+      def set_default_filter
+        @since    = params[:since] || 1.day.ago
+        @page     = params[:page]
+        @per_page = params[:per_page]
       end
 
-      def stock_transfers(since)
-        Spree::StockTransfer
-                    .ransack(:updated_at_gteq => since).result
-                    .page(params[:page])
-                    .per(params[:per_page])
-                    .order('updated_at ASC')
-      end
-
-      def products(since)
-        Spree::Product
-                    .ransack(:updated_at_gteq => since).result
-                    .page(params[:page])
-                    .per(params[:per_page])
-                    .order('updated_at ASC')
+      def filter_resource(relation)
+        relation.ransack(updated_at_gteq: @since).result
+        .page(@page)
+        .per(@per_page)
+        .order('updated_at ASC')
       end
 
       def collection_attributes
