@@ -98,7 +98,7 @@ module Spree
     context '#show_users' do
       it 'gets users changed since' do
         user = create(:user)
-        LegacyUser.update_all(:updated_at => 2.days.ago)
+        Spree.user_class.update_all(:updated_at => 2.days.ago)
 
         api_get :show_users, since: 3.days.ago.utc.to_s,
           page: 1,
