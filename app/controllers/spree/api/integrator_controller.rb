@@ -46,7 +46,7 @@ module Spree
       private
       def set_default_filter
         @since    = params[:since] || 1.day.ago
-        @page     = params[:page]
+        @page     = params[:page]  || 1
         @per_page = params[:per_page]
       end
 
