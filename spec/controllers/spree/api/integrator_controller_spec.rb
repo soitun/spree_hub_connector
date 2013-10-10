@@ -36,14 +36,14 @@ module Spree
           page: 1,
           per_page: 1
 
-        json_response['orders']['count'].should eq 1
-        json_response['orders']['current_page'].should eq 1
+        json_response['count'].should eq 1
+        json_response['current_page'].should eq 1
 
-        json_response['orders']['page'].first['number'].should eq order.number
-        json_response['orders']['page'].first.should have_key('ship_address')
-        json_response['orders']['page'].first.should have_key('bill_address')
-        json_response['orders']['page'].first.should have_key('payments')
-        json_response['orders']['page'].first.should have_key('credit_cards')
+        json_response['orders'].first['number'].should eq order.number
+        json_response['orders'].first.should have_key('ship_address')
+        json_response['orders'].first.should have_key('bill_address')
+        json_response['orders'].first.should have_key('payments')
+        json_response['orders'].first.should have_key('credit_cards')
       end
     end
 
@@ -74,7 +74,7 @@ module Spree
           page: 1,
           per_page: 1
 
-        transfer = json_response['stock_transfers']['page'].first
+        transfer = json_response['stock_transfers'].first
         transfer['destination_location']['name'].should eq 'DEST101'
         transfer['destination_movements'].first['quantity'].should eq 1
       end
@@ -89,9 +89,9 @@ module Spree
           page: 1,
           per_page: 1
 
-        json_response['products']['count'].should eq 1
-        json_response['products']['current_page'].should eq 1
-        json_response['products']['page'].first['id'].should eq product.id
+        json_response['count'].should eq 1
+        json_response['current_page'].should eq 1
+        json_response['products'].first['id'].should eq product.id
       end
     end
 
@@ -104,9 +104,9 @@ module Spree
           page: 1,
           per_page: 1
 
-        json_response['users']['count'].should eq 1
-        json_response['users']['current_page'].should eq 1
-        json_response['users']['page'].first['id'].should eq user.id
+        json_response['count'].should eq 1
+        json_response['current_page'].should eq 1
+        json_response['users'].first['id'].should eq user.id
       end
     end
 
@@ -119,9 +119,9 @@ module Spree
           page: 1,
           per_page: 1
 
-        json_response['return_authorizations']['count'].should eq 1
-        json_response['return_authorizations']['current_page'].should eq 1
-        json_response['return_authorizations']['page'].first['id'].should eq return_authorization.id
+        json_response['count'].should eq 1
+        json_response['current_page'].should eq 1
+        json_response['return_authorizations'].first['id'].should eq return_authorization.id
       end
     end
   end
