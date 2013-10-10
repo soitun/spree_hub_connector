@@ -2,7 +2,8 @@ module Spree
   module Api
     class IntegratorController < Spree::Api::BaseController
       helper_method :collection_attributes,
-        :stock_transfer_attributes
+        :stock_transfer_attributes,
+        :product_attributes
 
       respond_to :json
 
@@ -63,6 +64,10 @@ module Spree
 
       def stock_transfer_attributes
         [:id, :reference_number, :created_at, :updated_at]
+      end
+
+      def product_attributes
+        [:id, :name, :description, :price, :available_on, :permalink, :meta_description, :meta_keywords, :shipping_category_id, :taxon_ids, :updated_at]
       end
     end
   end
