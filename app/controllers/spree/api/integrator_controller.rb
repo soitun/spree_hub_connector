@@ -17,8 +17,8 @@ module Spree
       def index
         @collections = [
           OpenStruct.new({ name: 'orders',                 token: 'number',  frequency: '5.minutes' }),
-          OpenStruct.new({ name: 'users',                  token: 'number',  frequency: '5.minutes' }),
-          OpenStruct.new({ name: 'products',               token: 'number',  frequency: '1.hour' }),
+          OpenStruct.new({ name: 'users',                  token: 'id',      frequency: '5.minutes' }),
+          OpenStruct.new({ name: 'products',               token: 'id',      frequency: '1.hour' }),
           OpenStruct.new({ name: 'return_authorizations',  token: 'id',      frequency: '1.hour' }),
           OpenStruct.new({ name: 'stock_transfers',        token: 'id',      frequency: '1.hour' })
         ]
