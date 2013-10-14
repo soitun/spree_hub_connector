@@ -6,31 +6,32 @@ module Spree
 
     before { stub_authentication! }
 
-    context '#index' do
+    describe '#index' do
       it 'gets all available collections' do
         api_get :index
 
         expect(json_response['collections']).to have(5).items
       end
 
-      it 'all collections should be available to show' do
-        api_get :index
+      context 'when request show_* listed on index' do
+        it 'all collections should be available to show' do
+          api_get :index
 
-        json_response['collections'].each do |collection|
+          json_response['collections'].each do |collection|
+            api_get "show_#{collection['name']}", since: 3.days.ago.utc.to_s,
+              page: 1,
+              per_page: 1
 
-          api_get "show_#{collection['name']}", since: 3.days.ago.utc.to_s,
-            page: 1,
-            per_page: 1
-
-          response.should be_ok
+            response.should be_ok
+          end
         end
       end
     end
 
-    context '#show_orders' do
+    describe '#show_orders' do
       it 'gets orders changed since' do
         order = create(:completed_order_with_totals)
-        Order.update_all(:updated_at => 2.days.ago)
+        Order.update_all(updated_at: 2.days.ago)
 
         api_get :show_orders, since: 3.days.ago.utc.to_s,
           page: 1,
@@ -47,16 +48,16 @@ module Spree
       end
     end
 
-    context '#show_stock_transfers' do
+    describe '#show_stock_transfers' do
       it 'gets stock_transfers changed since' do
         source = create(:stock_location)
-        destination = create(:stock_location_with_items, :name => 'DEST101')
+        destination = create(:stock_location_with_items, name: 'DEST101')
         stock_transfer = StockTransfer.create do |transfer|
           transfer.source_location_id = source.id
           transfer.destination_location_id = destination.id
           transfer.reference = 'PO 666'
         end
-        StockTransfer.update_all(:updated_at => 2.days.ago)
+        StockTransfer.update_all(updated_at: 2.days.ago)
 
         StockMovement.create do |movement|
           movement.stock_item = source.stock_items.first
@@ -80,10 +81,10 @@ module Spree
       end
     end
 
-    context '#show_products' do
+    describe '#show_products' do
       it 'gets products changed since' do
         product = create(:product)
-        Product.update_all(:updated_at => 2.days.ago)
+        Product.update_all(updated_at: 2.days.ago)
 
         api_get :show_products, since: 3.days.ago.utc.to_s,
           page: 1,
@@ -95,10 +96,10 @@ module Spree
       end
     end
 
-    context '#show_users' do
+    describe '#show_users' do
       it 'gets users changed since' do
         user = create(:user)
-        Spree.user_class.update_all(:updated_at => 2.days.ago)
+        Spree.user_class.update_all(updated_at: 2.days.ago)
 
         api_get :show_users, since: 3.days.ago.utc.to_s,
           page: 1,
@@ -110,10 +111,10 @@ module Spree
       end
     end
 
-    context '#show_return_authorizations' do
+    describe '#show_return_authorizations' do
       it 'gets return_authorizations changed since' do
         return_authorization = create(:return_authorization)
-        ReturnAuthorization.update_all(:updated_at => 2.days.ago)
+        ReturnAuthorization.update_all(updated_at: 2.days.ago)
 
         api_get :show_return_authorizations, since: 3.days.ago.utc.to_s,
           page: 1,
