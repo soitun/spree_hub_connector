@@ -9,7 +9,6 @@
 </div>
 
 <%= javascript_tag do -%>
-  Augury = { SignUp: {}, Preload: {}, connections: {} };
   Augury.SignUp.urls = {};
   Augury.SignUp.urls['production'] = "http://hub.spreecommerce.com";
   Augury.SignUp.urls['staging'] = "http://staging.hub.spreecommerce.com";
@@ -19,6 +18,7 @@
   Augury.SignUp.api_key = '<%= @integrator_user.spree_api_key %>';
   Augury.SignUp.user = '<%= spree_current_user.email %>';
 
+  Augury.connections = {}
   <% AuguryEnvironment.all.each do |env| %>
     Augury.connections[<%= env.id %>] = { url: '<%= env.url %>', token: '<%= env.token %>', environment: '<%= env.environment %>', user: '<%= env.user %>' };
   <% end %>
@@ -32,6 +32,12 @@
     Augury.url = '<%= @environment.url %>';
     Augury.store_id = '<%= @environment.store_id %>';
     Augury.api_key = '<%= @environment.token %>';
+    Augury.Preload.integrations = <%== @integrations_json %>;
+    Augury.Preload.mappings = <%== @mappings_json %>;
+    Augury.Preload.schedulers = <%== @schedulers_json %>;
+    Augury.Preload.parameters = <%== @parameters_json %>;
+    Augury.Preload.messages = <%== @messages_json %>;
+
     Augury.env_id = '<%= @environment.id %>';
 
     $(function() {
@@ -39,10 +45,3 @@
     });
   <% end %>
 <% end %>
-
-<% if Rails.application.assets.find_asset('hub_client/manifest.js').nil? %>
-  <%= javascript_include_tag '//staging.hub.spreecommerce.com/hub.min.js' %>
-<% else %>
-  <%= javascript_include_tag 'hub_client/manifest.js' %>
-<% end %>
-
