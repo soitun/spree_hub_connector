@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pry-byebug'
 
 module Spree
   describe Api::IntegratorController do

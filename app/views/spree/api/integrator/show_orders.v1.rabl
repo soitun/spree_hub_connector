@@ -1,5 +1,6 @@
 object false
 
+
 child(@orders => :orders) do
   attributes *order_attributes
 
