@@ -1,3 +1,5 @@
+helpers Spree::Api::ApiHelpers
+object @orders || @order
 attributes *order_attributes
 
 attribute :currency, :ship_total, :tax_total
